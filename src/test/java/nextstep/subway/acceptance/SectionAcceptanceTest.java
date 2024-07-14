@@ -77,6 +77,18 @@ public class SectionAcceptanceTest {
             );
         }
 
+        @DisplayName("기존 구간에 새롭게 추가할 상행종점역이 존재하지 않으면 400 상태코드를 반환한다")
+        @Test
+        void failTest1() {
+            //given 기존 구간에
+            //when 새롭게 추가할 상행종점역이 존재하지 않으면
+            var 신규구간 = new AddSectionRequest(잠실역, 삼성역, 10L);
+            var 생성_결과 = 구간을_추가한다(수인분당선, 신규구간);
+
+            //Then 400 상태코드를 반환한다
+            assertThat(생성_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        }
+
 
         @DisplayName("이미 노선에 등록되어있는 역을 하행종점역으로 등록하면 400 상태코드를 반환한다.")
         @Test
