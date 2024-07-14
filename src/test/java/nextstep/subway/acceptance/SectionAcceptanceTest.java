@@ -1,8 +1,6 @@
-package nextstep.subway.section;
+package nextstep.subway.acceptance;
 
-import nextstep.subway.line.LineApiRequest;
 import nextstep.subway.line.payload.AddSectionRequest;
-import nextstep.subway.station.StationApiRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -11,9 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static nextstep.subway.line.LineApiRequest.노선을_조회한다;
-import static nextstep.subway.section.SectionApiRequest.구간을_추가한다;
-import static nextstep.subway.section.SectionApiRequest.노선에서_역을_삭제한다;
+import static nextstep.subway.acceptance.LineApiRequest.노선을_조회한다;
+import static nextstep.subway.acceptance.SectionApiRequest.구간을_추가한다;
+import static nextstep.subway.acceptance.SectionApiRequest.노선에서_역을_삭제한다;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
