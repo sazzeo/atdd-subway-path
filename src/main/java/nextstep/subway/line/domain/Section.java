@@ -61,10 +61,10 @@ public class Section {
         }
     }
 
-    public void updateForNextSection(final Section nextStation) {
+    public void updateForNewSection(final Section nextStation) {
         Long newDistance = this.distance - nextStation.distance;
         assertDistancePositive(newDistance);
-        this.downStationId =nextStation.upStationId;
+        this.upStationId = nextStation.downStationId;
         this.distance = newDistance;
     }
 
