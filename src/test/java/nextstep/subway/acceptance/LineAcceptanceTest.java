@@ -23,9 +23,9 @@ public class LineAcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = StationApiRequest.create("강남역").jsonPath().getLong("id");
-        선릉역 = StationApiRequest.create("선릉역").jsonPath().getLong("id");
-        삼성역 = StationApiRequest.create("삼성역").jsonPath().getLong("id");
+        강남역 = StationApiRequest.역을_생성한다("강남역").jsonPath().getLong("id");
+        선릉역 = StationApiRequest.역을_생성한다("선릉역").jsonPath().getLong("id");
+        삼성역 = StationApiRequest.역을_생성한다("삼성역").jsonPath().getLong("id");
     }
 
     @Nested

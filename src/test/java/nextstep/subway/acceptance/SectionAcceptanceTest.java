@@ -29,10 +29,10 @@ public class SectionAcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        최초상행종점역 = StationApiRequest.create("최초상행종점역").jsonPath().getLong("id");
-        최초하행종점역 = StationApiRequest.create("최초하행종점역").jsonPath().getLong("id");
-        삼성역 = StationApiRequest.create("삼성역").jsonPath().getLong("id");
-        잠실역 = StationApiRequest.create("잠실역").jsonPath().getLong("id");
+        최초상행종점역 = StationApiRequest.역을_생성한다("최초상행종점역").jsonPath().getLong("id");
+        최초하행종점역 = StationApiRequest.역을_생성한다("최초하행종점역").jsonPath().getLong("id");
+        삼성역 = StationApiRequest.역을_생성한다("삼성역").jsonPath().getLong("id");
+        잠실역 = StationApiRequest.역을_생성한다("잠실역").jsonPath().getLong("id");
 
         수인분당선 = LineApiRequest.create("수인분당선", "yellow", 최초상행종점역, 최초하행종점역, 10L).jsonPath().getLong("id");
     }
