@@ -1,13 +1,10 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import nextstep.subway.line.exception.InsufficientStationsException;
-import nextstep.subway.line.exception.InvalidDownStationException;
-import nextstep.subway.line.exception.InvalidUpStationException;
-import nextstep.subway.line.exception.NotTerminusStationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,14 +45,14 @@ class LineTest {
     @Nested
     class whenAdd {
 
-        @DisplayName("새로 등록하려는 상행역이 기존 하행역이 아니면 에러를 발생시킨다")
+        @DisplayName("새로 등록하려는 상행역이 기존 구간 역에 존재하지 않으면 에러를 발생시킨다")
         @Test
         void test1() {
-            //when 새로 등록하려는 상행역이 기존 하행역이 아니면
+            //when 새로 등록하려는 상행역이 기존 구간 역에 존재하지 않으면
             var 새상행역 = 3L;
             var 새하행역 = 4L;
             //then 에러를 발생시킨다
-            assertThrows(InvalidUpStationException.class, () -> {
+            assertThrows(LineHasNoStationException.class, () -> {
                 line.addSection(새상행역, 새하행역, 20L);
             });
         }

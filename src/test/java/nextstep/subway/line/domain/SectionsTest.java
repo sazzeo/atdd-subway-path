@@ -36,7 +36,7 @@ class SectionsTest {
         sections.add(new Section(역3, 역4, 10L));
 
         //when 모든 구간을 조회하면
-        var sectionIds = sections.getStationIds();
+        var sectionIds = sections.getAllStationIds();
 
         // Then 역Id를 등록한 순서대로 반환한다
         assertThat(sectionIds).containsExactly(1L, 2L, 3L, 4L);
@@ -81,7 +81,7 @@ class SectionsTest {
         sections.add(new Section(역2, 역3, 10L));
 
         //Then 다시 조회했을때 추가된 역을 확인 할 수 있다
-        assertThat(sections.getStationIds()).containsExactly(역1,역2 ,역3);
+        assertThat(sections.getAllStationIds()).containsExactly(역1,역2 ,역3);
     }
 
 
@@ -125,7 +125,7 @@ class SectionsTest {
         sections.add(new Section(역2, 역3, 10L));
 
         sections.removeLastStation(역3);
-        assertThat(sections.getStationIds()).containsExactly(역1,역2);
+        assertThat(sections.getAllStationIds()).containsExactly(역1,역2);
 
     }
 

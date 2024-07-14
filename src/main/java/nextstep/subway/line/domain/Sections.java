@@ -1,10 +1,7 @@
 package nextstep.subway.line.domain;
 
 
-import nextstep.subway.line.exception.InsufficientStationsException;
-import nextstep.subway.line.exception.InvalidDownStationException;
-import nextstep.subway.line.exception.InvalidUpStationException;
-import nextstep.subway.line.exception.NotTerminusStationException;
+import nextstep.subway.line.exception.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,21 +15,22 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public void add(final Section section) {
-        if(this.sections.isEmpty()) {
+        if (this.sections.isEmpty()) {
             sections.add(section);
             return;
         }
 
-        if (isNotLastStation(section.getUpStationId())) {
-            throw new InvalidUpStationException("새로등록하려는 상행역이 기존 하행역이 아닙니다.");
+        if (!getAllStationIds().contains(section.getUpStationId())) {
+            throw new LineHasNoStationException("기존 역이 존재하지 않습니다.");
         }
-        if(isUpStationAlreadyExists(section.getDownStationId())) {
+
+        if (isUpStationAlreadyExists(section.getDownStationId())) {
             throw new InvalidDownStationException("하행역으로 등록하려는 역이 이미 존재합니다.");
         }
         sections.add(section);
     }
 
-    public List<Long> getStationIds() {
+    public List<Long> getAllStationIds() {
         List<Long> stationIds = sections.stream()
                 .map(Section::getUpStationId)
                 .collect(Collectors.toList());
@@ -47,13 +45,13 @@ public class Sections {
     }
 
     public void removeLastStation(final Long stationId) {
-        if(isNotLastStation(stationId)) {
+        if (isNotLastStation(stationId)) {
             throw new NotTerminusStationException("삭제하려는 역이 종착역이 아닙니다.");
         }
-        if(hasOnlyOneSection()) {
+        if (hasOnlyOneSection()) {
             throw new InsufficientStationsException("구간이 1개밖에 없어 역을 삭제할 수 없습니다.");
         }
-        sections.remove(sections.size()-1);
+        sections.remove(sections.size() - 1);
     }
 
     public boolean hasOnlyOneSection() {
