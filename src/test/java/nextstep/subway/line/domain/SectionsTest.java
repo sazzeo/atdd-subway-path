@@ -48,7 +48,7 @@ class SectionsTest {
     class WhenAdd {
         @DisplayName("새로 등록하려는 상행역이 기존 구간 역에 존재하지 않으면 에러를 발생시킨다")
         @Test
-        void addTest1() {
+        void failTest1() {
             //Given 기존 노선에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -62,7 +62,7 @@ class SectionsTest {
 
         @DisplayName("하행역으로 등록하려는 역이 이미 존재하는 경우 에러를 발생시킨다")
         @Test
-        void addTest2() {
+        void failTest2() {
             //Given 기존 노선에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -76,7 +76,7 @@ class SectionsTest {
 
         @DisplayName("기존 구간 사이에 새로 등록하려는 구간의 거리가 원래 구간의 거리보다 크거나 같으면 에러를 발생시킨다")
         @Test
-        void addTest3() {
+        void failTest3() {
             //Given 기존 구간 사이에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -86,6 +86,20 @@ class SectionsTest {
             //Then 에러를 발생시킨다
             assertThrows(SectionDistanceNotValidException.class, () ->
                     sections.add(new Section(역2, 역4, 10L))
+            );
+        }
+
+        @DisplayName("원래 거리가 1 미만인 노선 중간에 구간 추가시 에러를 발생시킨다")
+        @Test
+        void failTest4() {
+            //Given 원래 거리가 1 미만인 노선
+            var sections = new Sections();
+            sections.add(new Section(역1, 역2, 1L));
+
+            //Given 중간에 구간 추가시
+            //Then 에러를 발생시킨다
+            assertThrows(SectionDistanceNotValidException.class, () ->
+                    sections.add(new Section(역1, 역3, 1L))
             );
         }
 
@@ -159,7 +173,10 @@ class SectionsTest {
             sections.add(new Section(역1, 역2, 10L));
             sections.add(new Section(역2, 역3, 10L));
 
+            //When 종착역 삭제시
             sections.removeLastStation(역3);
+
+            //Then 삭제에 성공한다
             assertThat(sections.getAllStationIds()).containsExactly(역1, 역2);
 
         }
