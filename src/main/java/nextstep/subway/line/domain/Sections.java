@@ -13,6 +13,8 @@ public class Sections {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "line_id")
     private List<Section> sections = new ArrayList<>();
+    @Transient
+    private final SectionStationSorter sectionStationSorter = new SectionStationSorter();
 
     public void add(final Section section) {
         if (this.sections.isEmpty()) {
@@ -35,12 +37,11 @@ public class Sections {
         }
 
         Section originSection = getSectionByUpStationId(section.getUpStationId());
-        //기존 역의 하행역을 조정한다.
-        originSection.updateForNextSection(section);
-        //그리고 새 역을 추가한다
+        //기존 역의 상행역과 거리를 조정한다.
+        originSection.updateForNewSection(section);
+        //이후 새 역을 추가한다
         sections.add(section);
     }
-
 
 
     private Section getSectionByUpStationId(final Long stationId) {
@@ -61,6 +62,9 @@ public class Sections {
         return stationIds;
     }
 
+    public List<Long> getSortedStationIds() {
+        return sectionStationSorter.getSortedStationIds(this.sections);
+    }
 
     public boolean isLastStation(final Long stationId) {
         return this.getLastDownStationId().equals(stationId);
@@ -89,4 +93,5 @@ public class Sections {
                 .map(Section::getUpStationId)
                 .anyMatch(id -> id.equals(stationId));
     }
+
 }

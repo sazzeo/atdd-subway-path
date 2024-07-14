@@ -49,7 +49,7 @@ public class Line {
     }
 
     public List<Long> getStationIds() {
-        return sections.getAllStationIds();
+        return sections.getSortedStationIds();
     }
 
     public void removeLastStation(final Long stationId) {

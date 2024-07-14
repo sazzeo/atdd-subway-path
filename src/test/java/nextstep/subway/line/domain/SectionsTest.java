@@ -26,7 +26,7 @@ class SectionsTest {
 
     @Nested
     class WhenShow {
-        @DisplayName("모든 구간에 해당하는 역 Id을 차례대로 반환한다")
+        @DisplayName("모든 구간에 해당하는 역 Id을 반환한다")
         @Test
         void getLastStationIdTest() {
             //Given 역 4개가 있을때
@@ -38,8 +38,8 @@ class SectionsTest {
             //when 모든 구간을 조회하면
             var sectionIds = sections.getAllStationIds();
 
-            // Then 역Id를 등록한 순서대로 반환한다
-            assertThat(sectionIds).containsExactly(1L, 2L, 3L, 4L);
+            // Then 역id 를 반환한다
+            assertThat(sectionIds).containsOnly(1L, 2L, 3L, 4L);
         }
 
     }
@@ -83,15 +83,31 @@ class SectionsTest {
             sections.add(new Section(역2, 역3, 10L));
 
             //When 새로 등록하려는 구간의 거리가 원래 구간의 거리보다 크거나 같으면
+            //Then 에러를 발생시킨다
             assertThrows(SectionDistanceNotValidException.class, () ->
                     sections.add(new Section(역2, 역4, 10L))
             );
         }
 
+        @DisplayName("기존 구간 사이에 새로 등록하려는 역을 추가하고 다시 조회하면 역이 추가되어있다.")
+        @Test
+        void addSuccessTest1() {
+            //Given 기존 구간 사이에
+            var sections = new Sections();
+            sections.add(new Section(역1, 역2, 10L));
+            sections.add(new Section(역2, 역3, 10L));
+
+            //When 새로 등록하려는 역을 추가하고
+            sections.add(new Section(역2, 역4, 9L));
+
+            //Then 다시 조회하면 역이 추가되어있다.
+            assertThat(sections.getSortedStationIds()).containsOnly(역1, 역2, 역4, 역3);
+        }
+
 
         @DisplayName("기존 하행역을 상행역으로 하는 구간을 추가한다")
         @Test
-        void addSuccessTest() {
+        void addSuccessTest2() {
             //Given
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
