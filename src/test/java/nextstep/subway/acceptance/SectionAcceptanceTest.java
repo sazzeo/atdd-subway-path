@@ -40,7 +40,6 @@ public class SectionAcceptanceTest {
     @Nested
     class WhenAddSection {
 
-
         @DisplayName("새로운 구간 등록후 해당 노선을 조회하면 등록된 모든 역을 확인 할 수 있다.")
         @Test
         void addSection() {
@@ -60,18 +59,24 @@ public class SectionAcceptanceTest {
 
         }
 
-
-        @DisplayName("기존 하행종점역이 새로운 구간의 상행종점역이 아니면 새 구간 등록시 400 상태코드를 반환한다.")
+        @DisplayName("기존 구간 중간에 새로운 역을 추가할 수 있다.")
         @Test
-        void failTest1() {
+        void addMiddleSection() {
             //given 기존 구간에
-            //when 추가하는 역이 기존의 하행종점역이 아닌 경우
+            //when 새로운 역을 추가하면
             var 신규구간 = new AddSectionRequest(최초상행종점역, 삼성역, 10L);
             var 생성_결과 = 구간을_추가한다(수인분당선, 신규구간);
 
-            //then 400 상태코드를 반환한다
-            assertThat(생성_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            var 노선 = 노선을_조회한다(String.format("/lines/%d", 수인분당선)).jsonPath();
+
+            //then 다시 조회시 새로운 구간이 함께 조회된다.
+            assertAll(() -> {
+
+                        assertThat(노선.getList("stations.name")).containsExactly("최초상행종점역", "삼성역", "최초하행종점역");
+                    }
+            );
         }
+
 
         @DisplayName("이미 노선에 등록되어있는 역을 하행종점역으로 등록하면 400 상태코드를 반환한다.")
         @Test
@@ -84,6 +89,7 @@ public class SectionAcceptanceTest {
             //then 400 상태코드를 반환한다
             assertThat(생성_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         }
+
 
     }
 
