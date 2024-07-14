@@ -3,7 +3,7 @@ package nextstep.subway.line.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.exception.NonExistentLineException;
+import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.line.payload.LineResponse;
 import nextstep.subway.line.repository.LineRepository;
 import nextstep.subway.station.domain.Station;
@@ -55,7 +55,7 @@ public class LineQueryService {
 
     private Line getById(final Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new NonExistentLineException("존재하지 않는 지하철 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException("존재하지 않는 지하철 노선입니다."));
     }
 
     private List<Station> getLineStations(final Line line) {
