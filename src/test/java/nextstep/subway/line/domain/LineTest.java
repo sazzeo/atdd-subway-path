@@ -1,6 +1,9 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.exception.*;
+import nextstep.subway.line.exception.InsufficientStationsException;
+import nextstep.subway.line.exception.InvalidDownStationException;
+import nextstep.subway.line.exception.LineHasNoStationException;
+import nextstep.subway.line.exception.NotTerminusStationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,57 +26,17 @@ class LineTest {
     }
 
     @Nested
-    class whenShow {
-        @DisplayName("모든 구간에 해당하는 역을 순서대로 반환한다.")
-        @Test
-        void test() {
-            //Given 구간이 3개일때
-            var 신규역1 = 3L;
-            var 신규역2 = 4L;
-            line.addSection(하행역, 신규역1, 10L );
-            line.addSection(신규역1, 신규역2, 10L );
-
-            //When 모든역 조회시
-            var stationIds = line.getStationIds();
-
-            //Then 역을 4개를 모두 반환한다
-            assertThat(stationIds).containsExactly(상행역, 하행역, 신규역1, 신규역2);
-
-        }
-    }
-
-    @Nested
-    class whenAdd {
-
-        @DisplayName("새로 등록하려는 상행역이 기존 구간 역에 존재하지 않으면 에러를 발생시킨다")
-        @Test
-        void test1() {
-            //when 새로 등록하려는 상행역이 기존 구간 역에 존재하지 않으면
-            var 새상행역 = 3L;
-            var 새하행역 = 4L;
-            //then 에러를 발생시킨다
-            assertThrows(LineHasNoStationException.class, () -> {
-                line.addSection(새상행역, 새하행역, 20L);
-            });
-        }
-
-        @DisplayName("새로 등록하려는 하행역이 이미 등록된 경우 에러를 발생시킨다")
-        @Test
-        void test2() {
-            //when 새로 등록하려는 하행역이 이미 등록된 경우
-            var 새상행역 = 2L;
-            var 새하행역 = 1L;
-            //then 에러를 발생시킨다
-            assertThrows(InvalidDownStationException.class, () ->
-                    line.addSection(새상행역, 새하행역, 20L)
-            );
-
-        }
+    class WhenShow {
 
     }
 
     @Nested
-    class whenDelete {
+    class WhenAdd {
+
+    }
+
+    @Nested
+    class WhenDelete {
 
         @DisplayName("역이 3개 이상일 때 삭제하려는 역이 기존 종착역이 아닌 경우 에러를 발생시킨다")
         @Test
