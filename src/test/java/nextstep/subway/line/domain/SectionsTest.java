@@ -74,6 +74,21 @@ class SectionsTest {
             );
         }
 
+        @DisplayName("기존 구간 사이에 새로 등록하려는 구간의 거리가 원래 구간의 거리보다 크거나 같으면 에러를 발생시킨다")
+        @Test
+        void addTest3() {
+            //Given 기존 구간 사이에
+            var sections = new Sections();
+            sections.add(new Section(역1, 역2, 10L));
+            sections.add(new Section(역2, 역3, 10L));
+
+            //When 새로 등록하려는 구간의 거리가 원래 구간의 거리보다 크거나 같으면
+            assertThrows(SectionDistanceNotValidException.class, () ->
+                    sections.add(new Section(역2, 역4, 10L))
+            );
+        }
+
+
         @DisplayName("기존 하행역을 상행역으로 하는 구간을 추가한다")
         @Test
         void addSuccessTest() {
@@ -85,7 +100,7 @@ class SectionsTest {
             sections.add(new Section(역2, 역3, 10L));
 
             //Then 다시 조회했을때 추가된 역을 확인 할 수 있다
-            assertThat(sections.getAllStationIds()).containsExactly(역1,역2 ,역3);
+            assertThat(sections.getAllStationIds()).containsExactly(역1, 역2, 역3);
         }
 
     }
@@ -119,16 +134,17 @@ class SectionsTest {
                     sections.removeLastStation(2L)
             );
         }
+
         @DisplayName("구간이 2개 이상일 떄는 종착역 삭제에 성공한다")
         @Test
-        void removeSuccessTest(){
+        void removeSuccessTest() {
             //Given 구간이 2개 이상일 때
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
             sections.add(new Section(역2, 역3, 10L));
 
             sections.removeLastStation(역3);
-            assertThat(sections.getAllStationIds()).containsExactly(역1,역2);
+            assertThat(sections.getAllStationIds()).containsExactly(역1, 역2);
 
         }
 

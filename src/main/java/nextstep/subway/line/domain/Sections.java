@@ -27,7 +27,29 @@ public class Sections {
         if (isUpStationAlreadyExists(section.getDownStationId())) {
             throw new InvalidDownStationException("하행역으로 등록하려는 역이 이미 존재합니다.");
         }
+
+        //만약 마지막 역에 추가하는거면 추가
+        if(isLastStation(section.getUpStationId())) {
+            sections.add(section);
+            return;
+        }
+
+        Section originSection = getSectionByUpStationId(section.getUpStationId());
+        //기존 역의 하행역을 조정한다.
+        originSection.updateForNextSection(section);
+        //그리고 새 역을 추가한다
         sections.add(section);
+    }
+
+
+
+    private Section getSectionByUpStationId(final Long stationId) {
+        for (Section section : sections) {
+            if(section.getUpStationId().equals(stationId)) {
+                return section;
+            }
+        }
+        throw new SectionNotFoundException("존재하지 않은 구간입니다.");
     }
 
     public List<Long> getAllStationIds() {
@@ -40,12 +62,12 @@ public class Sections {
     }
 
 
-    public boolean isNotLastStation(final Long stationId) {
-        return !this.getLastDownStationId().equals(stationId);
+    public boolean isLastStation(final Long stationId) {
+        return this.getLastDownStationId().equals(stationId);
     }
 
     public void removeLastStation(final Long stationId) {
-        if (isNotLastStation(stationId)) {
+        if (!isLastStation(stationId)) {
             throw new NotTerminusStationException("삭제하려는 역이 종착역이 아닙니다.");
         }
         if (hasOnlyOneSection()) {

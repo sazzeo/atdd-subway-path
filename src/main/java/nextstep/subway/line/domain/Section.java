@@ -36,9 +36,7 @@ public class Section {
         if(upStationId.equals(downStationId)) {
             throw new SectionNotValidException("상행역과 하행역은 다른 역이어야 합니다.");
         }
-        if(distance < 1) {
-            throw new SectionDistanceNotValidException("거리는 1이상이어야 합니다.");
-        }
+        assertDistancePositive(distance);
     }
 
     public Long getId() {
@@ -56,4 +54,18 @@ public class Section {
     public Long getDistance() {
         return distance;
     }
+
+    public void assertDistancePositive(Long distance) {
+        if(distance < 1) {
+            throw new SectionDistanceNotValidException("거리는 1이상이어야 합니다.");
+        }
+    }
+
+    public void updateForNextSection(final Section nextStation) {
+        Long newDistance = this.distance - nextStation.distance;
+        assertDistancePositive(newDistance);
+        this.downStationId =nextStation.upStationId;
+        this.distance = newDistance;
+    }
+
 }
