@@ -1,4 +1,4 @@
-package nextstep.subway.station;
+package nextstep.subway.station.payload;
 
 public class StationRequest {
     private String name;

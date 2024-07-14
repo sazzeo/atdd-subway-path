@@ -2,8 +2,8 @@ package nextstep.subway.line.payload;
 
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.Station;
-import nextstep.subway.station.StationResponse;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.payload.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

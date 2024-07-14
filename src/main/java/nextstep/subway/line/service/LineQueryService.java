@@ -6,8 +6,8 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.exception.NonExistentLineException;
 import nextstep.subway.line.payload.LineResponse;
 import nextstep.subway.line.repository.LineRepository;
-import nextstep.subway.station.Station;
-import nextstep.subway.station.StationRepository;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.repository.StationRepository;
 
 import java.util.List;
 import java.util.Map;

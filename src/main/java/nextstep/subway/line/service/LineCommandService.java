@@ -10,8 +10,8 @@ import nextstep.subway.line.payload.CreateLineRequest;
 import nextstep.subway.line.payload.LineResponse;
 import nextstep.subway.line.payload.UpdateLineRequest;
 import nextstep.subway.line.repository.LineRepository;
-import nextstep.subway.station.Station;
-import nextstep.subway.station.StationRepository;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.repository.StationRepository;
 import nextstep.subway.station.exception.NonExistentStationException;
 
 import java.util.List;
