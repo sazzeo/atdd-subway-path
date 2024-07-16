@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 
+import nextstep.subway.exceptions.ErrorMessage;
 import nextstep.subway.line.exception.*;
 
 import javax.persistence.*;
@@ -21,14 +22,7 @@ public class Sections {
             sections.add(section);
             return;
         }
-
-        if (!getAllStationIds().contains(section.getUpStationId())) {
-            throw new LineHasNoStationException("기존 역이 존재하지 않습니다.");
-        }
-
-        if (isUpStationAlreadyExists(section.getDownStationId())) {
-            throw new InvalidDownStationException("하행역으로 등록하려는 역이 이미 존재합니다.");
-        }
+        validateBeforeAdd(section);
 
         //만약 마지막 역에 추가하는거면 추가
         if(isLastStation(section.getUpStationId())) {
@@ -37,20 +31,8 @@ public class Sections {
         }
 
         Section originSection = getSectionByUpStationId(section.getUpStationId());
-        //기존 역의 상행역과 거리를 조정한다.
         originSection.updateForNewSection(section);
-        //이후 새 역을 추가한다
         sections.add(section);
-    }
-
-
-    private Section getSectionByUpStationId(final Long stationId) {
-        for (Section section : sections) {
-            if(section.getUpStationId().equals(stationId)) {
-                return section;
-            }
-        }
-        throw new SectionNotFoundException("존재하지 않은 구간입니다.");
     }
 
     public List<Long> getAllStationIds() {
@@ -72,16 +54,35 @@ public class Sections {
 
     public void removeLastStation(final Long stationId) {
         if (!isLastStation(stationId)) {
-            throw new NotTerminusStationException("삭제하려는 역이 종착역이 아닙니다.");
+            throw new NotTerminusStationException(ErrorMessage.NOT_TERMINUS_STATION);
         }
         if (hasOnlyOneSection()) {
-            throw new InsufficientStationsException("구간이 1개밖에 없어 역을 삭제할 수 없습니다.");
+            throw new InsufficientStationsException(ErrorMessage.INSUFFICIENT_STATIONS);
         }
         sections.remove(sections.size() - 1);
     }
 
     public boolean hasOnlyOneSection() {
         return sections.size() == 1;
+    }
+
+    private void validateBeforeAdd(final Section section) {
+        if (!getAllStationIds().contains(section.getUpStationId())) {
+            throw new LineHasNoStationException("기존 역이 존재하지 않습니다.");
+        }
+
+        if (isUpStationAlreadyExists(section.getDownStationId())) {
+            throw new InvalidDownStationException("하행역으로 등록하려는 역이 이미 존재합니다.");
+        }
+    }
+
+    private Section getSectionByUpStationId(final Long stationId) {
+        for (Section section : sections) {
+            if(section.getUpStationId().equals(stationId)) {
+                return section;
+            }
+        }
+        throw new SectionNotFoundException("존재하지 않은 구간입니다.");
     }
 
     private Long getLastDownStationId() {
