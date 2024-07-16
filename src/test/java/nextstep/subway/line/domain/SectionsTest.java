@@ -39,7 +39,7 @@ class SectionsTest {
             var sectionIds = sections.getAllStationIds();
 
             // Then 역id 를 반환한다
-            assertThat(sectionIds).containsOnly(1L, 2L, 3L, 4L);
+            assertThat(sectionIds).containsOnly(역1, 역2, 역3, 역4);
         }
 
     }
@@ -147,7 +147,7 @@ class SectionsTest {
             //When 삭제 하려는 역이 종착역이 아닌 경우
             //Then 에러를 발생시킨다
             assertThrows(NotTerminusStationException.class, () ->
-                    sections.removeLastStation(1L)
+                    sections.removeLastStation(역1)
             );
         }
 
@@ -161,7 +161,7 @@ class SectionsTest {
             //When  종착역 삭제시
             //Then 에러를 발생시킨다
             assertThrows(InsufficientStationsException.class, () ->
-                    sections.removeLastStation(2L)
+                    sections.removeLastStation(역2)
             );
         }
 

@@ -17,4 +17,8 @@ public class HttpStatusAssertion {
     public static void assertBadRequest(int status) {
         assertThat(status).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    public static void assertCreated(int status) {
+        assertThat(status).isEqualTo(HttpStatus.CREATED.value());
+    }
 }

@@ -25,7 +25,7 @@ public class SectionStationSorter {
         return stationIds;
     }
 
-    private static Long getFirstUpStationId(final Map<Long, Long> upDownMap, final Set<Long> downStationIds) {
+    private Long getFirstUpStationId(final Map<Long, Long> upDownMap, final Set<Long> downStationIds) {
         for (Long upStationId : upDownMap.keySet()) {
             if (!downStationIds.contains(upStationId)) {
                 return upStationId;

@@ -1,17 +1,21 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.path.json.JsonPath;
 import nextstep.subway.line.payload.AddSectionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static nextstep.subway.acceptance.LineApiRequest.*;
 import static nextstep.subway.acceptance.LineApiRequest.노선을_조회한다;
 import static nextstep.subway.acceptance.SectionApiRequest.구간을_추가한다;
 import static nextstep.subway.acceptance.SectionApiRequest.노선에서_역을_삭제한다;
+import static nextstep.subway.acceptance.StationApiRequest.*;
+import static nextstep.subway.utils.HttpStatusAssertion.assertBadRequest;
+import static nextstep.subway.utils.HttpStatusAssertion.assertNoContent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -29,14 +33,15 @@ public class SectionAcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        최초상행종점역 = StationApiRequest.역을_생성한다("최초상행종점역").jsonPath().getLong("id");
-        최초하행종점역 = StationApiRequest.역을_생성한다("최초하행종점역").jsonPath().getLong("id");
-        삼성역 = StationApiRequest.역을_생성한다("삼성역").jsonPath().getLong("id");
-        잠실역 = StationApiRequest.역을_생성한다("잠실역").jsonPath().getLong("id");
+        최초상행종점역 = 역을_생성한다("최초상행종점역").jsonPath().getLong("id");
+        최초하행종점역 = 역을_생성한다("최초하행종점역").jsonPath().getLong("id");
+        삼성역 = 역을_생성한다("삼성역").jsonPath().getLong("id");
+        잠실역 = 역을_생성한다("잠실역").jsonPath().getLong("id");
 
-        수인분당선 = LineApiRequest.create("수인분당선", "yellow", 최초상행종점역, 최초하행종점역, 10L).jsonPath().getLong("id");
+        수인분당선 = 노선을_생성한다("수인분당선", "yellow", 최초상행종점역, 최초하행종점역, 10L).jsonPath().getLong("id");
     }
 
+    @DisplayName("추가시")
     @Nested
     class WhenAddSection {
 
@@ -48,12 +53,12 @@ public class SectionAcceptanceTest {
             var 생성_결과 = 구간을_추가한다(수인분당선, 신규구간);
 
             //when 노선 조회시
-            var 노선목록 = 노선을_조회한다(String.format("/lines/%d", 수인분당선)).jsonPath();
+            var 노선 = 노선을_조회한다(String.format("/lines/%d", 수인분당선)).jsonPath();
 
             //then 등록된 모든 역을 확인할 수 있다.
             assertAll(() -> {
-                        assertThat(생성_결과.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-                        assertThat(노선목록.getList("stations.name", String.class)).containsExactly("최초상행종점역", "최초하행종점역", "삼성역");
+                        assertNoContent(생성_결과.statusCode());
+                        역_이름_순서_검증(노선, "최초상행종점역", "최초하행종점역", "삼성역");
                     }
             );
 
@@ -70,10 +75,8 @@ public class SectionAcceptanceTest {
             var 노선 = 노선을_조회한다(String.format("/lines/%d", 수인분당선)).jsonPath();
 
             //then 다시 조회시 새로운 구간이 함께 조회된다.
-            assertAll(() -> {
-                        assertThat(노선.getList("stations.name")).containsExactly("최초상행종점역", "삼성역", "최초하행종점역");
-                    }
-            );
+            역_이름_순서_검증(노선, "최초상행종점역", "삼성역", "최초하행종점역");
+
         }
 
         @DisplayName("기존 구간에 새롭게 추가할 상행종점역이 존재하지 않으면 400 상태코드를 반환한다")
@@ -85,7 +88,7 @@ public class SectionAcceptanceTest {
             var 생성_결과 = 구간을_추가한다(수인분당선, 신규구간);
 
             //Then 400 상태코드를 반환한다
-            assertThat(생성_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertBadRequest(생성_결과.statusCode());
         }
 
 
@@ -98,12 +101,11 @@ public class SectionAcceptanceTest {
             var 생성_결과 = 구간을_추가한다(수인분당선, 신규구간);
 
             //then 400 상태코드를 반환한다
-            assertThat(생성_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertBadRequest(생성_결과.statusCode());
         }
-
-
     }
 
+    @DisplayName("삭제시")
     @Nested
     class WhenDeleteSection {
 
@@ -121,8 +123,8 @@ public class SectionAcceptanceTest {
 
             //then 삭제된 역이 다시 조회되지 않는다
             assertAll(() -> {
-                        assertThat(삭제_결과.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-                        assertThat(노선.getList("stations.name", String.class)).containsExactly("최초상행종점역", "최초하행종점역");
+                        assertNoContent(삭제_결과.statusCode());
+                        역_이름_순서_검증(노선, "최초상행종점역", "최초하행종점역");
                     }
             );
         }
@@ -139,7 +141,7 @@ public class SectionAcceptanceTest {
             var 삭제_결과 = 노선에서_역을_삭제한다(수인분당선, 최초하행종점역);
 
             //then 400 상태코드를 반환한다
-            assertThat(삭제_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertBadRequest(삭제_결과.statusCode());
         }
 
         @DisplayName("역이 2개 이하로 존재하는 경우 삭제시 400 상태코드를 반환한다.")
@@ -151,9 +153,13 @@ public class SectionAcceptanceTest {
             var 삭제_결과 = 노선에서_역을_삭제한다(수인분당선, 최초하행종점역);
 
             //then 400 상태코드를 반환한다
-            assertThat(삭제_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertBadRequest(삭제_결과.statusCode());
         }
 
+    }
+
+    private void 역_이름_순서_검증(JsonPath jsonPath, String... values) {
+        assertThat(jsonPath.getList("stations.name", String.class)).containsExactly(values);
     }
 
 }
