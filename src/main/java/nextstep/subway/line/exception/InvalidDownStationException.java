@@ -2,9 +2,10 @@ package nextstep.subway.line.exception;
 
 
 import nextstep.subway.exceptions.BaseException;
+import nextstep.subway.exceptions.ErrorMessage;
 
 public class InvalidDownStationException extends BaseException {
-    public InvalidDownStationException(final String message) {
-        super(message);
+    public InvalidDownStationException(final ErrorMessage errorMessage) {
+        super(errorMessage);
     }
 }

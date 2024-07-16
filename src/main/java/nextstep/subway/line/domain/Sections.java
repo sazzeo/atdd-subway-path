@@ -68,11 +68,11 @@ public class Sections {
 
     private void validateBeforeAdd(final Section section) {
         if (!getAllStationIds().contains(section.getUpStationId())) {
-            throw new LineHasNoStationException("기존 역이 존재하지 않습니다.");
+            throw new LineHasNoStationException(ErrorMessage.LINE_HAS_NO_STATION);
         }
 
         if (isUpStationAlreadyExists(section.getDownStationId())) {
-            throw new InvalidDownStationException("하행역으로 등록하려는 역이 이미 존재합니다.");
+            throw new InvalidDownStationException(ErrorMessage.INVALID_DOWN_STATION);
         }
     }
 
@@ -82,7 +82,7 @@ public class Sections {
                 return section;
             }
         }
-        throw new SectionNotFoundException("존재하지 않은 구간입니다.");
+        throw new SectionNotFoundException(ErrorMessage.SECTION_NOT_FOUND);
     }
 
     private Long getLastDownStationId() {
