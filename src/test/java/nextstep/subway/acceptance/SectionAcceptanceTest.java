@@ -109,9 +109,9 @@ public class SectionAcceptanceTest {
     @Nested
     class WhenDeleteSection {
 
-        @DisplayName("역 삭제에 성공후 노선을 조회하면 삭제된 역이 조회되지 않는다.")
+        @DisplayName("마지막역을 삭제할 수 있다")
         @Test
-        void deleteSection() {
+        void successTest1() {
             //given 신규구간 추가 후
             var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
             구간을_추가한다(수인분당선, 신규구간);
@@ -130,19 +130,46 @@ public class SectionAcceptanceTest {
         }
 
 
-        @DisplayName("제거하려는 역이 선택된 노선의 하행종점역이 아니면 400 상태코드를 반환한다.")
+        @DisplayName("중간역을 삭제할 수 있다.")
         @Test
-        void failTest1() {
+        void successTest2() {
             //given 신규구간 추가 후
             var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
             구간을_추가한다(수인분당선, 신규구간);
 
-            //when 하행종점역이 아닌 역을 삭제하면
-            var 삭제_결과 = 노선에서_역을_삭제한다(수인분당선, 최초하행종점역);
 
-            //then 400 상태코드를 반환한다
-            assertBadRequest(삭제_결과.statusCode());
+            //when 중간역 삭제에 성공하면 노선 조회시
+            var 삭제_결과 = 노선에서_역을_삭제한다(수인분당선, 최초하행종점역);
+            var 노선 = 노선을_조회한다(String.format("/lines/%d", 수인분당선)).jsonPath();
+
+            //then 삭제된 역이 다시 조회되지 않는다
+            assertAll(() -> {
+                        assertNoContent(삭제_결과.statusCode());
+                        역_이름_순서_검증(노선, "최초상행종점역", "삼성역");
+                    }
+            );
         }
+
+        @DisplayName("첫번째역을 삭제할 수 있다.")
+        @Test
+        void successTest3() {
+            //given 신규구간 추가 후
+            var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
+            구간을_추가한다(수인분당선, 신규구간);
+
+
+            //when 첫번째 역 삭제에 성공하면 노선 조회시
+            var 삭제_결과 = 노선에서_역을_삭제한다(수인분당선, 최초상행종점역);
+            var 노선 = 노선을_조회한다(String.format("/lines/%d", 수인분당선)).jsonPath();
+
+            //then 삭제된 역이 다시 조회되지 않는다
+            assertAll(() -> {
+                        assertNoContent(삭제_결과.statusCode());
+                        역_이름_순서_검증(노선, "삼성역", "최초하행종점역");
+                    }
+            );
+        }
+
 
         @DisplayName("역이 2개 이하로 존재하는 경우 삭제시 400 상태코드를 반환한다.")
         @Test

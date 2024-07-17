@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import org.springframework.data.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,12 @@ public class SectionStationSorter {
         }
         return stationIds;
     }
+
+    public Pair<Long, Long> getFirstAndLastStationId(final List<Section> sections) {
+        List<Long> sortedStationIds = getSortedStationIds(sections);
+        return Pair.of(sortedStationIds.get(0), sortedStationIds.get(sortedStationIds.size() - 1));
+    }
+
 
     private Long getFirstUpStationId(final Map<Long, Long> upDownMap, final Set<Long> downStationIds) {
         for (Long upStationId : upDownMap.keySet()) {
