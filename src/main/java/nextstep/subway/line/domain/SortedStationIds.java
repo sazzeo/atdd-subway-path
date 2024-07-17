@@ -1,16 +1,40 @@
 package nextstep.subway.line.domain;
 
-import org.springframework.data.util.Pair;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class SectionStationSorter {
+public class SortedStationIds {
 
-    public List<Long> getSortedStationIds(final List<Section> sections) {
+    private List<Long> sortedStationIds;
+
+    public SortedStationIds(final List<Section> sections) {
+        this.sortedStationIds = createSortedStationIds(sections);
+    }
+
+    public List<Long> value() {
+        return Collections.unmodifiableList(this.sortedStationIds);
+    }
+
+    public void sort(final List<Section> sections) {
+        sortedStationIds = createSortedStationIds(sections);
+    }
+
+    public Long getFirstStationId() {
+        return sortedStationIds.get(0);
+    }
+
+    public boolean isFirstStation(final Long stationId) {
+        return getFirstStationId().equals(stationId);
+    }
+
+    public Long getLastStationId() {
+        return sortedStationIds.get(sortedStationIds.size() - 1);
+    }
+
+    public boolean isLastStation(final Long stationId) {
+        return getLastStationId().equals(stationId);
+    }
+    private List<Long> createSortedStationIds(final List<Section> sections) {
         List<Long> stationIds = new ArrayList<>();
         Map<Long, Long> upDownMap = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStationId, Section::getDownStationId));
@@ -26,12 +50,6 @@ public class SectionStationSorter {
         }
         return stationIds;
     }
-
-    public Pair<Long, Long> getFirstAndLastStationId(final List<Section> sections) {
-        List<Long> sortedStationIds = getSortedStationIds(sections);
-        return Pair.of(sortedStationIds.get(0), sortedStationIds.get(sortedStationIds.size() - 1));
-    }
-
 
     private Long getFirstUpStationId(final Map<Long, Long> upDownMap, final Set<Long> downStationIds) {
         for (Long upStationId : upDownMap.keySet()) {
