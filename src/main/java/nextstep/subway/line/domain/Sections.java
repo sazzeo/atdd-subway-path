@@ -2,7 +2,10 @@ package nextstep.subway.line.domain;
 
 
 import nextstep.subway.exceptions.ErrorMessage;
-import nextstep.subway.line.exception.*;
+import nextstep.subway.line.exception.InsufficientStationsException;
+import nextstep.subway.line.exception.InvalidDownStationException;
+import nextstep.subway.line.exception.LineHasNoStationException;
+import nextstep.subway.line.exception.SectionNotFoundException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,24 +18,29 @@ public class Sections {
     @JoinColumn(name = "line_id")
     private List<Section> sections = new ArrayList<>();
     @Transient
-    private final SectionStationSorter sectionStationSorter = new SectionStationSorter();
+    private final SortedStation sortedSectionIds = new SortedStation(sections);
 
     public void add(final Section section) {
         if (this.sections.isEmpty()) {
-            sections.add(section);
+            addAndSort(section);
             return;
         }
         validateBeforeAdd(section);
 
         //만약 마지막 역에 추가하는거면 추가
-        if(isLastStation(section.getUpStationId())) {
-            sections.add(section);
+        if (sortedSectionIds.isLastStation(section.getUpStationId())) {
+            addAndSort(section);
             return;
         }
 
         Section originSection = getSectionByUpStationId(section.getUpStationId());
         originSection.updateForNewSection(section);
+        addAndSort(section);
+    }
+
+    public void addAndSort(final Section section) {
         sections.add(section);
+        sortedSectionIds.setSortedStation(this.sections);
     }
 
     public List<Long> getAllStationIds() {
@@ -40,26 +48,26 @@ public class Sections {
                 .map(Section::getUpStationId)
                 .collect(Collectors.toList());
 
-        stationIds.add(getLastDownStationId());
+        stationIds.add(sortedSectionIds.getLastStationId());
         return stationIds;
     }
 
     public List<Long> getSortedStationIds() {
-        return sectionStationSorter.getSortedStationIds(this.sections);
+        return sortedSectionIds.value();
     }
 
-    public boolean isLastStation(final Long stationId) {
-        return this.getLastDownStationId().equals(stationId);
-    }
 
-    public void removeLastStation(final Long stationId) {
-        if (!isLastStation(stationId)) {
-            throw new NotTerminusStationException(ErrorMessage.NOT_TERMINUS_STATION);
-        }
+    public void removeStation(final Long stationId) {
         if (hasOnlyOneSection()) {
             throw new InsufficientStationsException(ErrorMessage.INSUFFICIENT_STATIONS);
         }
-        sections.remove(sections.size() - 1);
+        if (sortedSectionIds.isFirstStation(stationId)) {
+        }
+
+        if (sortedSectionIds.isLastStation(stationId)) {
+
+        }
+
     }
 
     public boolean hasOnlyOneSection() {
@@ -67,7 +75,7 @@ public class Sections {
     }
 
     private void validateBeforeAdd(final Section section) {
-        if (!getAllStationIds().contains(section.getUpStationId())) {
+        if (!sortedSectionIds.value().contains(section.getUpStationId())) {
             throw new LineHasNoStationException(ErrorMessage.LINE_HAS_NO_STATION);
         }
 
@@ -76,18 +84,15 @@ public class Sections {
         }
     }
 
-    private Section getSectionByUpStationId(final Long stationId) {
+    Section getSectionByUpStationId(final Long stationId) {
         for (Section section : sections) {
-            if(section.getUpStationId().equals(stationId)) {
+            if (section.getUpStationId().equals(stationId)) {
                 return section;
             }
         }
         throw new SectionNotFoundException(ErrorMessage.SECTION_NOT_FOUND);
     }
 
-    private Long getLastDownStationId() {
-        return sections.get(sections.size() - 1).getDownStationId();
-    }
 
     private boolean isUpStationAlreadyExists(Long stationId) {
         return sections.stream()

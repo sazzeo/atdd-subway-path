@@ -21,6 +21,8 @@ public class Section {
 
     private Long distance;
 
+    private Long position;
+
     protected Section() {
 
     }

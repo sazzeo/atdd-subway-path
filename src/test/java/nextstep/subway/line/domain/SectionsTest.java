@@ -137,18 +137,21 @@ class SectionsTest {
 
     @Nested
     class WhenDelete {
-        @DisplayName("삭제 하려는 역이 종착역이 아닌 경우 에러를 발생시킨다")
+        @DisplayName("삭제 하려는 역이 중간역인 경우 삭제되고 거리가 합쳐진다")
         @Test
         void removeTest1() {
             //Given 기존 노선에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
+            sections.add(new Section(역2, 역3, 10L));
 
-            //When 삭제 하려는 역이 종착역이 아닌 경우
-            //Then 에러를 발생시킨다
-            assertThrows(NotTerminusStationException.class, () ->
-                    sections.removeLastStation(역1)
-            );
+            //When 중간역을 삭제하면
+            sections.removeStation(역2);
+
+            //Then 원래 거리가 합쳐진다
+            var 구간 = sections.getSectionByUpStationId(역1);
+
+            assertThat(구간.getDistance()).isEqualTo(20L);
         }
 
         @DisplayName("구간이 1개밖에 없는 경우 종착역 삭제시 에러를 발생시킨다")
@@ -161,7 +164,7 @@ class SectionsTest {
             //When  종착역 삭제시
             //Then 에러를 발생시킨다
             assertThrows(InsufficientStationsException.class, () ->
-                    sections.removeLastStation(역2)
+                    sections.removeStation(역2)
             );
         }
 
@@ -174,14 +177,12 @@ class SectionsTest {
             sections.add(new Section(역2, 역3, 10L));
 
             //When 종착역 삭제시
-            sections.removeLastStation(역3);
+            sections.removeStation(역3);
 
             //Then 삭제에 성공한다
             assertThat(sections.getAllStationIds()).containsExactly(역1, 역2);
 
         }
-
-
     }
 
 

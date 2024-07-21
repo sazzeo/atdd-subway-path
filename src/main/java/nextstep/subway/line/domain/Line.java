@@ -53,7 +53,7 @@ public class Line {
     }
 
     public void removeLastStation(final Long stationId) {
-        sections.removeLastStation(stationId);
+        sections.removeStation(stationId);
     }
 
 }
