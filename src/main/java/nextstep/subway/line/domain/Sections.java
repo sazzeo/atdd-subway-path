@@ -39,7 +39,7 @@ public class Sections {
 
 
     public List<Long> getSortedStationIds() {
-        return StationSorter.getSortedStationIds(this.sections);
+        return SectionStationSorter.getSortedStationIds(this.sections);
     }
 
     public void removeStation(final Long stationId) {

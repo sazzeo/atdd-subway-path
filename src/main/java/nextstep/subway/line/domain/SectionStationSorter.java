@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class StationSorter {
+public class SectionStationSorter {
     public static List<Long> getSortedStationIds(final List<Section> sections) {
         List<Long> stationIds = new ArrayList<>();
         Map<Long, Long> upDownMap = sections.stream()
