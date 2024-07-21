@@ -10,72 +10,76 @@ import nextstep.subway.line.exception.SectionNotFoundException;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "line_id")
     private List<Section> sections = new ArrayList<>();
-    @Transient
-    private final SortedStation sortedSectionIds = new SortedStation(sections);
 
     public void add(final Section section) {
         if (this.sections.isEmpty()) {
-            addAndSort(section);
+            sections.add(section);
             return;
         }
         validateBeforeAdd(section);
 
         //만약 마지막 역에 추가하는거면 추가
-        if (sortedSectionIds.isLastStation(section.getUpStationId())) {
-            addAndSort(section);
+        if (isLastStation(section.getUpStationId())) {
+            sections.add(section);
             return;
         }
 
-        Section originSection = getSectionByUpStationId(section.getUpStationId());
+        Section originSection = findByUpStationId(section.getUpStationId())
+                .orElseThrow(() -> new SectionNotFoundException(ErrorMessage.SECTION_NOT_FOUND));
         originSection.updateForNewSection(section);
-        addAndSort(section);
-    }
-
-    public void addAndSort(final Section section) {
         sections.add(section);
-        sortedSectionIds.setSortedStation(this.sections);
     }
 
-    public List<Long> getAllStationIds() {
-        List<Long> stationIds = sections.stream()
-                .map(Section::getUpStationId)
-                .collect(Collectors.toList());
-
-        stationIds.add(sortedSectionIds.getLastStationId());
-        return stationIds;
-    }
 
     public List<Long> getSortedStationIds() {
-        return sortedSectionIds.value();
+        return StationSorter.getSortedStationIds(this.sections);
     }
-
 
     public void removeStation(final Long stationId) {
         if (hasOnlyOneSection()) {
             throw new InsufficientStationsException(ErrorMessage.INSUFFICIENT_STATIONS);
         }
-        if (sortedSectionIds.isFirstStation(stationId)) {
+        Optional<Section> previousSection = findByDownStationId(stationId);
+        Optional<Section> nextSection = findByUpStationId(stationId);
+        previousSection.ifPresent((section) -> sections.remove(section));
+        nextSection.ifPresent((section -> sections.remove(section)));
+
+        if (previousSection.isPresent() && nextSection.isPresent()) {
+            mergeSection(previousSection.get(), nextSection.get());
         }
-
-        if (sortedSectionIds.isLastStation(stationId)) {
-
-        }
-
     }
 
-    public boolean hasOnlyOneSection() {
+    public void mergeSection(final Section previousSection, final Section nextSection) {
+        Long distance = previousSection.getDistance() + nextSection.getDistance();
+        Section newSection = new Section(previousSection.getUpStationId(), nextSection.getDownStationId(), distance);
+        sections.add(newSection);
+    }
+
+    Optional<Section> findByUpStationId(Long upStationId) {
+        return sections.stream()
+                .filter(section -> section.getUpStationId().equals(upStationId))
+                .findFirst();
+    }
+
+    private Optional<Section> findByDownStationId(Long downStationId) {
+        return sections.stream()
+                .filter(section -> section.getDownStationId().equals(downStationId))
+                .findFirst();
+    }
+
+    private boolean hasOnlyOneSection() {
         return sections.size() == 1;
     }
 
     private void validateBeforeAdd(final Section section) {
-        if (!sortedSectionIds.value().contains(section.getUpStationId())) {
+        if (!getSortedStationIds().contains(section.getUpStationId())) {
             throw new LineHasNoStationException(ErrorMessage.LINE_HAS_NO_STATION);
         }
 
@@ -84,20 +88,15 @@ public class Sections {
         }
     }
 
-    Section getSectionByUpStationId(final Long stationId) {
-        for (Section section : sections) {
-            if (section.getUpStationId().equals(stationId)) {
-                return section;
-            }
-        }
-        throw new SectionNotFoundException(ErrorMessage.SECTION_NOT_FOUND);
-    }
-
 
     private boolean isUpStationAlreadyExists(Long stationId) {
         return sections.stream()
                 .map(Section::getUpStationId)
                 .anyMatch(id -> id.equals(stationId));
+    }
+
+    private boolean isLastStation(final Long stationId) {
+        return findByUpStationId(stationId).isEmpty();
     }
 
 }

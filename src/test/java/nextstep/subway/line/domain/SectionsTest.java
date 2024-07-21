@@ -36,7 +36,7 @@ class SectionsTest {
             sections.add(new Section(역3, 역4, 10L));
 
             //when 모든 구간을 조회하면
-            var sectionIds = sections.getAllStationIds();
+            var sectionIds = sections.getSortedStationIds();
 
             // Then 역id 를 반환한다
             assertThat(sectionIds).containsOnly(역1, 역2, 역3, 역4);
@@ -130,7 +130,7 @@ class SectionsTest {
             sections.add(new Section(역2, 역3, 10L));
 
             //Then 다시 조회했을때 추가된 역을 확인 할 수 있다
-            assertThat(sections.getAllStationIds()).containsExactly(역1, 역2, 역3);
+            assertThat(sections.getSortedStationIds()).containsExactly(역1, 역2, 역3);
         }
 
     }
@@ -149,7 +149,8 @@ class SectionsTest {
             sections.removeStation(역2);
 
             //Then 원래 거리가 합쳐진다
-            var 구간 = sections.getSectionByUpStationId(역1);
+            var 구간 = sections.findByUpStationId(역1)
+                    .orElseThrow();
 
             assertThat(구간.getDistance()).isEqualTo(20L);
         }
@@ -180,8 +181,7 @@ class SectionsTest {
             sections.removeStation(역3);
 
             //Then 삭제에 성공한다
-            assertThat(sections.getAllStationIds()).containsExactly(역1, 역2);
-
+            assertThat(sections.getSortedStationIds()).containsExactly(역1, 역2);
         }
     }
 
