@@ -1,5 +1,6 @@
 package nextstep.subway.line.service;
 
+import nextstep.subway.exceptions.ErrorMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import nextstep.subway.line.domain.Line;
@@ -66,12 +67,12 @@ public class LineCommandService {
 
     private Station getStationById(final Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new NonExistentStationException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new NonExistentStationException(ErrorMessage.NON_EXISTENT_STATION));
     }
 
     private Line getLineById(final Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new LineNotFoundException("존재하지 않는 지하철 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException(ErrorMessage.LINE_NOT_FOUND));
     }
 
     private List<Station> getLineStations(final Line line) {

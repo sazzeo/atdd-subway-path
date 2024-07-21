@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exceptions.ErrorMessage;
 import nextstep.subway.line.exception.SectionDistanceNotValidException;
 import nextstep.subway.line.exception.SectionNotValidException;
 
@@ -59,7 +60,7 @@ public class Section {
 
     public void assertDistancePositive(Long distance) {
         if(distance < 1) {
-            throw new SectionDistanceNotValidException("거리는 1이상이어야 합니다.");
+            throw new SectionDistanceNotValidException(ErrorMessage.POSITIVE_DISTANCE);
         }
     }
 

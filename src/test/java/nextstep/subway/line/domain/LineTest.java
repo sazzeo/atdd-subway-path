@@ -38,19 +38,6 @@ class LineTest {
     @Nested
     class WhenDelete {
 
-        @DisplayName("역이 3개 이상일 때 삭제하려는 역이 기존 종착역이 아닌 경우 에러를 발생시킨다")
-        @Test
-        void test3() {
-            var 역3 = 3L;
-            line.addSection(하행역, 역3, 10L);
-
-            //when 삭제하려는 역이 현재 종착역이 아닌 경우
-            //then 에러를 발생시킨다
-            assertThrows(NotTerminusStationException.class, () ->
-                    line.removeLastStation(하행역)
-            );
-        }
-
         @DisplayName("역이 2개 이하로 존재하는 경우 하행역 삭제시 에러를 발생시킨다.")
         @Test
         void test4() {

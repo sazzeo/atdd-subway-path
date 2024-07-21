@@ -2,27 +2,23 @@ package nextstep.subway.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import nextstep.subway.line.payload.AddSectionRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import nextstep.subway.utils.DatabaseCleanup;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
-import static nextstep.subway.acceptance.LineApiRequest.*;
+import static nextstep.subway.acceptance.LineApiRequest.노선을_생성한다;
 import static nextstep.subway.acceptance.LineApiRequest.노선을_조회한다;
 import static nextstep.subway.acceptance.SectionApiRequest.구간을_추가한다;
 import static nextstep.subway.acceptance.SectionApiRequest.노선에서_역을_삭제한다;
-import static nextstep.subway.acceptance.StationApiRequest.*;
+import static nextstep.subway.acceptance.StationApiRequest.역을_생성한다;
 import static nextstep.subway.utils.HttpStatusAssertion.assertBadRequest;
 import static nextstep.subway.utils.HttpStatusAssertion.assertNoContent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("지하철 구간 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class SectionAcceptanceTest {
+public class SectionAcceptanceTest extends AcceptanceTest {
 
     private Long 최초상행종점역;
     private Long 최초하행종점역;
@@ -31,8 +27,10 @@ public class SectionAcceptanceTest {
 
     private Long 수인분당선;
 
+    @Override
     @BeforeEach
     void setUp() {
+        super.setUp();
         최초상행종점역 = 역을_생성한다("최초상행종점역").jsonPath().getLong("id");
         최초하행종점역 = 역을_생성한다("최초하행종점역").jsonPath().getLong("id");
         삼성역 = 역을_생성한다("삼성역").jsonPath().getLong("id");
@@ -157,7 +155,6 @@ public class SectionAcceptanceTest {
             var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
             구간을_추가한다(수인분당선, 신규구간);
 
-
             //when 첫번째 역 삭제에 성공하면 노선 조회시
             var 삭제_결과 = 노선에서_역을_삭제한다(수인분당선, 최초상행종점역);
             var 노선 = 노선을_조회한다(String.format("/lines/%d", 수인분당선)).jsonPath();
@@ -165,7 +162,7 @@ public class SectionAcceptanceTest {
             //then 삭제된 역이 다시 조회되지 않는다
             assertAll(() -> {
                         assertNoContent(삭제_결과.statusCode());
-                        역_이름_순서_검증(노선, "삼성역", "최초하행종점역");
+                        역_이름_순서_검증(노선, "최초하행종점역", "삼성역");
                     }
             );
         }

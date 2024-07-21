@@ -1,5 +1,6 @@
 package nextstep.subway.acceptance;
 
+import nextstep.subway.utils.DatabaseCleanup;
 import nextstep.subway.utils.HttpStatusAssertion;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,17 +14,18 @@ import static nextstep.subway.utils.HttpStatusAssertion.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("노선 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class LineAcceptanceTest {
+public class LineAcceptanceTest extends AcceptanceTest {
 
     private Long 강남역;
     private Long 선릉역;
     private Long 삼성역;
 
+    @Override
     @BeforeEach
     void setUp() {
+        super.setUp();
         강남역 = 역을_생성한다("강남역").jsonPath().getLong("id");
         선릉역 = 역을_생성한다("선릉역").jsonPath().getLong("id");
         삼성역 = 역을_생성한다("삼성역").jsonPath().getLong("id");
