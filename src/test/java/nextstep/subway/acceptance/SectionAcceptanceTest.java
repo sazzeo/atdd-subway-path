@@ -2,8 +2,10 @@ package nextstep.subway.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import nextstep.subway.line.payload.AddSectionRequest;
-import nextstep.subway.utils.DatabaseCleanup;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static nextstep.subway.acceptance.LineApiRequest.노선을_생성한다;

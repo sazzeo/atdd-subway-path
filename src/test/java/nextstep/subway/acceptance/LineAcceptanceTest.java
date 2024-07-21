@@ -1,15 +1,14 @@
 package nextstep.subway.acceptance;
 
-import nextstep.subway.utils.DatabaseCleanup;
-import nextstep.subway.utils.HttpStatusAssertion;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import static nextstep.subway.acceptance.LineApiRequest.*;
-import static nextstep.subway.acceptance.StationApiRequest.*;
+import static nextstep.subway.acceptance.StationApiRequest.역을_생성한다;
 import static nextstep.subway.utils.HttpStatusAssertion.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

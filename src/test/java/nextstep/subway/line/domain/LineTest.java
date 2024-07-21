@@ -1,9 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.exception.InsufficientStationsException;
-import nextstep.subway.line.exception.InvalidDownStationException;
-import nextstep.subway.line.exception.LineHasNoStationException;
-import nextstep.subway.line.exception.NotTerminusStationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
