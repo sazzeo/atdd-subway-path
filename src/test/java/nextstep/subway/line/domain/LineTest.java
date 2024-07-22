@@ -42,7 +42,7 @@ class LineTest {
             //when 하행역 삭제시
             //then 에러를 발생시킨다
             assertThrows(InsufficientStationsException.class, () ->
-                    line.removeLastStation(하행역)
+                    line.removeStation(하행역)
             );
         }
 
@@ -54,7 +54,7 @@ class LineTest {
             line.addSection(하행역, 역3, 10L);
 
             //마지막역을 삭제하면
-            line.removeLastStation(역3);
+            line.removeStation(역3);
 
             //then 조회되지 않는다
             assertThat(line.getStationIds()).containsExactly(상행역, 하행역);

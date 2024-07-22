@@ -150,7 +150,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
             );
         }
 
-        @DisplayName("첫번째역을 삭제할 수 있다.")
+        @DisplayName("상행종점역을 삭제할 수 있다.")
         @Test
         void successTest3() {
             //given 신규구간 추가 후

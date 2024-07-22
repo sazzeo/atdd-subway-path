@@ -52,7 +52,7 @@ public class Line {
         return sections.getSortedStationIds();
     }
 
-    public void removeLastStation(final Long stationId) {
+    public void removeStation(final Long stationId) {
         sections.removeStation(stationId);
     }
 

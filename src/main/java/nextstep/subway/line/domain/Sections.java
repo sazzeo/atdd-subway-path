@@ -53,7 +53,10 @@ public class Sections {
 
         if (previousSection.isPresent() && nextSection.isPresent()) {
             mergeSection(previousSection.get(), nextSection.get());
+            return;
         }
+
+        throw new LineHasNoStationException(ErrorMessage.NON_EXISTENT_STATION);
     }
 
     public void mergeSection(final Section previousSection, final Section nextSection) {

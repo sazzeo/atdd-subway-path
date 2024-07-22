@@ -183,6 +183,22 @@ class SectionsTest {
             //Then 삭제에 성공한다
             assertThat(sections.getSortedStationIds()).containsExactly(역1, 역2);
         }
+
+
+        @DisplayName("삭제하려는 역이 없을 때는 에러를 발생시킨다")
+        @Test
+        void removeFailTest2() {
+            //Given 구간이 2개 이상일 때
+            var sections = new Sections();
+            sections.add(new Section(역1, 역2, 10L));
+            sections.add(new Section(역2, 역3, 10L));
+
+            //When 삭제하려는 역이 없는 역이면
+            //Then 에러를 발생시킨다
+            assertThrows(LineHasNoStationException.class,
+                    () -> sections.removeStation(역4)
+            );
+        }
     }
 
 

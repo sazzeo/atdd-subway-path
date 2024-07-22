@@ -62,7 +62,7 @@ public class LineCommandService {
 
     public void removeSection(final Long id, final Long stationId) {
         Line line = getLineById(id);
-        line.removeLastStation(stationId);
+        line.removeStation(stationId);
     }
 
     private Station getStationById(final Long id) {
