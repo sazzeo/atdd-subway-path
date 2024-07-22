@@ -37,7 +37,7 @@ public class Section {
 
     private void validate(final Long upStationId, final Long downStationId, final Long distance) {
         if(upStationId.equals(downStationId)) {
-            throw new SectionNotValidException("상행역과 하행역은 다른 역이어야 합니다.");
+            throw new SectionNotValidException(ErrorMessage.DIFFERENT_STATIONS);
         }
         assertDistancePositive(distance);
     }

@@ -9,7 +9,8 @@ public enum ErrorMessage {
     INVALID_DOWN_STATION("하행역으로 등록하려는 역이 이미 존재합니다."),
     NON_EXISTENT_STATION("존재하지 않는 역입니다."),
     SECTION_NOT_FOUND("존재하지 않는 구간입니다."),
-    POSITIVE_DISTANCE("거리는 1이상이어야 합니다.")
+    POSITIVE_DISTANCE("거리는 1이상이어야 합니다."),
+    DIFFERENT_STATIONS("상행역과 하행역은 다른 역이어야 합니다.")
     ;
     private final String message;
 
