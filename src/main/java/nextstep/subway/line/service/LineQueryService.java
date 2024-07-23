@@ -1,5 +1,6 @@
 package nextstep.subway.line.service;
 
+import nextstep.subway.exceptions.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.line.payload.LineResponse;
@@ -59,7 +60,7 @@ public class LineQueryService {
 
     private Line getById(final Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new LineNotFoundException("존재하지 않는 지하철 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException(ErrorMessage.LINE_NOT_FOUND));
     }
 
 }

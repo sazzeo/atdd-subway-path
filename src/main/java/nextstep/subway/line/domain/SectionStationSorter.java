@@ -1,14 +1,10 @@
 package nextstep.subway.line.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SectionStationSorter {
-
-    public List<Long> getSortedStationIds(final List<Section> sections) {
+    public static List<Long> getSortedStationIds(final List<Section> sections) {
         List<Long> stationIds = new ArrayList<>();
         Map<Long, Long> upDownMap = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStationId, Section::getDownStationId));
@@ -33,4 +29,5 @@ public class SectionStationSorter {
         }
         throw new IllegalStateException("첫번째 역을 찾을 수 없습니다.");
     }
+
 }

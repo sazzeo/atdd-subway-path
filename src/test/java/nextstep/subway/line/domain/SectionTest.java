@@ -11,7 +11,7 @@ class SectionTest {
 
     @DisplayName("생성시 상행역과 하행역이 같으면 에러를 반환한다")
     @Test
-    void createTest() {
+    void whenUpStationAndDownStationSameThenThrow() {
         var 삼성역 = 1L;
         assertThrows(SectionNotValidException.class, () -> {
             new Section(삼성역, 삼성역, 10L);
@@ -20,7 +20,7 @@ class SectionTest {
 
     @DisplayName("거리가 1미만이면 에러를 반환한다")
     @Test
-    void distanceTest() {
+    void whenDistanceLessThanOneThenThrow() {
         var 삼성역 = 1L;
         var 선릉역 = 2L;
 
