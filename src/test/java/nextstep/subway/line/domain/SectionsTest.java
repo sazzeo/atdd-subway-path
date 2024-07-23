@@ -48,7 +48,7 @@ class SectionsTest {
     class WhenAdd {
         @DisplayName("새로 등록하려는 상행역이 기존 구간 역에 존재하지 않으면 에러를 발생시킨다")
         @Test
-        void failTest1() {
+        void whenLineHasNoStationThenThrow() {
             //Given 기존 노선에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -62,7 +62,7 @@ class SectionsTest {
 
         @DisplayName("하행역으로 등록하려는 역이 이미 존재하는 경우 에러를 발생시킨다")
         @Test
-        void failTest2() {
+        void whenStationExistThenThrow() {
             //Given 기존 노선에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -76,7 +76,7 @@ class SectionsTest {
 
         @DisplayName("기존 구간 사이에 새로 등록하려는 구간의 거리가 원래 구간의 거리보다 크거나 같으면 에러를 발생시킨다")
         @Test
-        void failTest3() {
+        void whenDistanceMoreThanOriginThenThrow() {
             //Given 기존 구간 사이에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -91,7 +91,7 @@ class SectionsTest {
 
         @DisplayName("원래 거리가 1 미만인 노선 중간에 구간 추가시 에러를 발생시킨다")
         @Test
-        void failTest4() {
+        void whenDistanceLessThan1ThenThrow() {
             //Given 원래 거리가 1 미만인 노선
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 1L));
@@ -105,7 +105,7 @@ class SectionsTest {
 
         @DisplayName("기존 구간 사이에 새로 등록하려는 역을 추가하고 다시 조회하면 역이 추가되어있다.")
         @Test
-        void addSuccessTest1() {
+        void whenAddBetween() {
             //Given 기존 구간 사이에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -119,14 +119,14 @@ class SectionsTest {
         }
 
 
-        @DisplayName("기존 하행역을 상행역으로 하는 구간을 추가한다")
+        @DisplayName("기존 하행종점역 뒤에 신규 구간을 추가한다")
         @Test
-        void addSuccessTest2() {
+        void whenAddLast() {
             //Given
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
 
-            //When 기존 하행역을 상행역으로 하는 구간을 추가시
+            //When 기존 하행종점역 뒤에구간 추가시
             sections.add(new Section(역2, 역3, 10L));
 
             //Then 다시 조회했을때 추가된 역을 확인 할 수 있다
@@ -139,7 +139,7 @@ class SectionsTest {
     class WhenDelete {
         @DisplayName("삭제 하려는 역이 중간역인 경우 삭제되고 거리가 합쳐진다")
         @Test
-        void removeTest1() {
+        void whenDeleteIntermediateThenPlusDistance() {
             //Given 기존 노선에
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -157,7 +157,7 @@ class SectionsTest {
 
         @DisplayName("구간이 1개밖에 없는 경우 종착역 삭제시 에러를 발생시킨다")
         @Test
-        void removeTest2() {
+        void whenDeleteWithOnlyOneSectionThenThrow() {
             //Given 구간이 1개밖에 없는 경우
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -171,7 +171,7 @@ class SectionsTest {
 
         @DisplayName("구간이 2개 이상일 떄는 종착역 삭제에 성공한다")
         @Test
-        void removeSuccessTest() {
+        void whenSectionMoreThanTwo() {
             //Given 구간이 2개 이상일 때
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));
@@ -187,7 +187,7 @@ class SectionsTest {
 
         @DisplayName("삭제하려는 역이 없을 때는 에러를 발생시킨다")
         @Test
-        void removeFailTest2() {
+        void whenDeleteNonExistStationThenThrow() {
             //Given 구간이 2개 이상일 때
             var sections = new Sections();
             sections.add(new Section(역1, 역2, 10L));

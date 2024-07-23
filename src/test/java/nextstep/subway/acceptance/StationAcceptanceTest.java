@@ -24,7 +24,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철역을 생성한다.")
     @Test
-    void createStation() {
+    void whenCreateStation() {
         // When  지하철역을 생성하면
         var response = 역을_생성한다("강남역");
         // Then 지하철역이 생성된다

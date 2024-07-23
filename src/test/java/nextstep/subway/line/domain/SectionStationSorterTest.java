@@ -24,7 +24,7 @@ class SectionStationSorterTest {
 
     @Test
     @DisplayName("정렬되지 않은 구간의 역을 순서대로 반환한다")
-    void test() {
+    void returnSortedStation() {
         //when 정렬 메소드 실행시
         var sortedStationIds = SectionStationSorter.getSortedStationIds(sections);
         //then 순서대로 반환한다

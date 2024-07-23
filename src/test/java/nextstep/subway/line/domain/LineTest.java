@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("노선 테스트")
 class LineTest {
 
     private Line line;
@@ -22,22 +23,13 @@ class LineTest {
         line = new Line("2호선", "green", new Section(상행역, 하행역, 10L));
     }
 
-    @Nested
-    class WhenShow {
-
-    }
-
-    @Nested
-    class WhenAdd {
-
-    }
-
+    @DisplayName("삭제시")
     @Nested
     class WhenDelete {
 
         @DisplayName("역이 2개 이하로 존재하는 경우 하행역 삭제시 에러를 발생시킨다.")
         @Test
-        void test4() {
+        void whenStationLessThanOrEqualTwoThenThrow() {
             //역이 2개 이하로 존재하는 경우
             //when 하행역 삭제시
             //then 에러를 발생시킨다
@@ -48,7 +40,7 @@ class LineTest {
 
         @DisplayName("역이 3개 이상일때 마지막역을 삭제하면 조회되지 않는다")
         @Test
-        void test5() {
+        void whenStationMoreThanThree() {
             //역이 3개 이상일때
             var 역3 = 3L;
             line.addSection(하행역, 역3, 10L);

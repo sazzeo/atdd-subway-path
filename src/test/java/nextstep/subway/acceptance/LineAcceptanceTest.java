@@ -103,7 +103,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("조회하려는 노선이 존재하지 않으면 400 상태코드를 반환한다.")
         @Test
-        void showLineWhenNotExist() {
+        void whenShowNotExistThanReturn400() {
             // When 조회하려는 노선이 존재하지 않으면
             var 조회_결과 = 노선을_조회한다("/lines/0");
             // Then 400 상태코드를 반환한다.
@@ -118,7 +118,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("노선을 수정한후 조회시 수정된 정보가 반환된다.")
         @Test
-        void updateLine() {
+        void whenUpdateLine() {
             //Given 노선을 생성하고
             var response = 노선을_생성한다("2호선", "bg-green-600", 강남역, 선릉역, 10L);
             var location = response.header(HttpHeaders.LOCATION);
@@ -140,7 +140,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("존재하지 않는 노선을 수정하면 400 상태코드르 반환한다.")
         @Test
-        void updateLineWhenNotExist() {
+        void whenNotExistLineUpdateThenReturn400() {
             //when 존재하지 않는 노선을 수정하면
             var 수정_결과 = update("/lines/0", "3호선", "bg-orange-500");
 
@@ -155,7 +155,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("삭제하려는 노선이 존재하면 삭제된 뒤 목록에서 제외된다")
         @Test
-        void deleteLine() {
+        void whenDeleteLine() {
             //Given 여러 노선을 생성하고
             var response = 노선을_생성한다("2호선", "bg-green-600", 강남역, 삼성역, 10L);
             노선을_생성한다("3호선", "bg-orange-500", 삼성역, 선릉역, 10L);
@@ -173,17 +173,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 assertThat(jsonPath.getList("color", String.class)).containsOnly("bg-orange-500");
             });
         }
+
+        @DisplayName("삭제하려는 노선이 존재하지 않으면 응답코드 400을 반환한다")
+        @Test
+        void whenDeleteNotExistLineThenReturn400() {
+            //When 존재하지 않는 노선을 삭제하면
+            var 삭제_결과 = delete("/lines/0");
+
+            //Then 400 를 발생시킨다
+            assertBadRequest(삭제_결과.statusCode());
+        }
     }
-
-    @DisplayName("삭제하려는 노선이 존재하지 않으면 응답코드 400을 반환한다")
-    @Test
-    void deleteLineWhenNotExist() {
-        //When 존재하지 않는 노선을 삭제하면
-        var 삭제_결과 = delete("/lines/0");
-
-        //Then 400 를 발생시킨다
-        assertBadRequest(삭제_결과.statusCode());
-    }
-
 
 }

@@ -47,7 +47,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("새로운 구간 등록후 해당 노선을 조회하면 등록된 모든 역을 확인 할 수 있다.")
         @Test
-        void addSection() {
+        void whenAddSection() {
             //given 새로운 구간 등록에 성공하면
             var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
             var 생성_결과 = 구간을_추가한다(수인분당선, 신규구간);
@@ -66,7 +66,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("기존 구간 중간에 새로운 역을 추가할 수 있다.")
         @Test
-        void addMiddleSection() {
+        void whenAddMiddleSection() {
             //given 기존 구간에
             //when 새로운 역을 추가하면
             var 신규구간 = new AddSectionRequest(최초상행종점역, 삼성역, 5L);
@@ -81,7 +81,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("기존 구간에 새롭게 추가할 상행종점역이 존재하지 않으면 400 상태코드를 반환한다")
         @Test
-        void failTest1() {
+        void whenAddNonExistUpStationThenReturn400() {
             //given 기존 구간에
             //when 새롭게 추가할 상행종점역이 존재하지 않으면
             var 신규구간 = new AddSectionRequest(잠실역, 삼성역, 10L);
@@ -94,7 +94,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("이미 노선에 등록되어있는 역을 하행종점역으로 등록하면 400 상태코드를 반환한다.")
         @Test
-        void failTest2() {
+        void whenDuplicateDownStationThenThrow() {
             //given 기존 구간에
             //when 이미 노선에 등록되어있는 역을 하행종점역으로 등록하면
             var 신규구간 = new AddSectionRequest(최초하행종점역, 최초상행종점역, 5L);
@@ -111,7 +111,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("마지막역을 삭제할 수 있다")
         @Test
-        void successTest1() {
+        void whenDeleteLastStation() {
             //given 신규구간 추가 후
             var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
             구간을_추가한다(수인분당선, 신규구간);
@@ -132,7 +132,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("중간역을 삭제할 수 있다.")
         @Test
-        void successTest2() {
+        void whenDeleteMiddleStation() {
             //given 신규구간 추가 후
             var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
             구간을_추가한다(수인분당선, 신규구간);
@@ -152,7 +152,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("상행종점역을 삭제할 수 있다.")
         @Test
-        void successTest3() {
+        void whenDeleteFirstStation() {
             //given 신규구간 추가 후
             var 신규구간 = new AddSectionRequest(최초하행종점역, 삼성역, 10L);
             구간을_추가한다(수인분당선, 신규구간);
@@ -172,7 +172,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("역이 2개 이하로 존재하는 경우 삭제시 400 상태코드를 반환한다.")
         @Test
-        void failTest2() {
+        void whenDeleteLessThanOrEqualTwoThenReturn400() {
             //given 역이 2개 이하로 존재하는 경우
 
             //when 삭제시
