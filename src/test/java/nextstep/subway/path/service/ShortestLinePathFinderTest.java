@@ -2,16 +2,14 @@ package nextstep.subway.path.service;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import org.assertj.core.api.Assertions;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
+import nextstep.subway.path.domain.PathResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 class ShortestLinePathFinderTest {
@@ -45,9 +43,16 @@ class ShortestLinePathFinderTest {
     @Test
     void test() {
         ShortestLinePathFinder pathFinder = new ShortestLinePathFinder();
-        GraphPath<Long, DefaultWeightedEdge> setup = pathFinder.setup(List.of(이호선, 신분당선, 삼호선), 교대역, 양재역);
+        PathResponse pathResponse = pathFinder.getPathResponse(List.of(이호선, 신분당선, 삼호선), 교대역, 양재역);
+        assertThat(pathResponse.getDistance()).isEqualTo(5L);
+    }
 
-        assertThat((int)setup.getWeight()).isEqualTo(5);
+    @DisplayName("최단거리를 정렬해 vertex만 반환한다")
+    @Test
+    void test2() {
+        ShortestLinePathFinder pathFinder = new ShortestLinePathFinder();
+        PathResponse pathResponse = pathFinder.getPathResponse(List.of(이호선, 신분당선, 삼호선), 교대역, 양재역);
+        assertThat(pathResponse.getPath()).containsExactly(교대역, 남부터미널역, 양재역);
     }
 
 }
