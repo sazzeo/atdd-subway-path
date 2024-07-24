@@ -4,6 +4,14 @@ public class SearchPathRequest {
     private Long source;
     private Long target;
 
+    public void setSource(final Long source) {
+        this.source = source;
+    }
+
+    public void setTarget(final Long target) {
+        this.target = target;
+    }
+
     public Long getSource() {
         return source;
     }

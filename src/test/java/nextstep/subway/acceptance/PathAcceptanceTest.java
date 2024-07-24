@@ -1,15 +1,13 @@
 package nextstep.subway.acceptance;
 
 import nextstep.subway.line.payload.AddSectionRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static nextstep.subway.acceptance.LineApiRequest.노선을_생성한다;
 import static nextstep.subway.acceptance.SectionApiRequest.구간을_추가한다;
 import static nextstep.subway.acceptance.StationApiRequest.역을_생성한다;
 import static nextstep.subway.utils.HttpStatusAssertion.assertBadRequest;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("경로 테스트")
@@ -51,7 +49,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         @DisplayName("최단거리를 반환한다")
         @Test
         void whenShowShortestPAth() {
-            PathApiRequest.최단거리를_반환한다(교대역, 양재역);
+            var 결과 = PathApiRequest.최단거리를_반환한다(교대역, 양재역);
+            var ids =결과.jsonPath().getList("stations.id" , Long.class);
+            assertThat(ids).containsExactly(교대역, 남부터미널역, 양재역);
         }
 
         @DisplayName("도착역과 출발역이 같은경우 400 코드를 반환한다")
@@ -65,7 +65,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         @DisplayName("도착역이나 출발역이 존재하지 않는 경우 400 코드를 반환한다")
         @Test
         void whenStationNonExistThenReturn400() {
-            // Given 존재하지 않느 역을
+            // Given 존재하지 않는 역을
             var 유령역 = -1L;
             // When 도착역이나 출발역으로 조회할 경우
             var 도착역없음 = PathApiRequest.최단거리를_반환한다(교대역, 유령역);

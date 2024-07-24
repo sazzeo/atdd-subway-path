@@ -17,7 +17,6 @@ public class PathApiRequest {
                 .params(Map.of("source", 출발역, "target", 도착역))
                 .when().get(URL_PREFIX)
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
                 .extract().response();
     }
 
