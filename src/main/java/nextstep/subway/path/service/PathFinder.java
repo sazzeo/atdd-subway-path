@@ -1,5 +1,7 @@
 package nextstep.subway.path.service;
 
-public interface PathFinder {
+import java.util.List;
+
+public interface PathFinder<VERTEX> {
 
 }
