@@ -55,8 +55,9 @@ public class Sections {
             mergeSection(previousSection.get(), nextSection.get());
             return;
         }
-
-        throw new LineHasNoStationException(ErrorMessage.NON_EXISTENT_STATION);
+        if ((previousSection.isEmpty() && nextSection.isEmpty())) {
+            throw new LineHasNoStationException(ErrorMessage.NON_EXISTENT_STATION);
+        }
     }
 
     public void mergeSection(final Section previousSection, final Section nextSection) {
