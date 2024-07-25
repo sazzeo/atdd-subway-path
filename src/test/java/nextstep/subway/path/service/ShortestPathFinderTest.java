@@ -25,6 +25,7 @@ class ShortestPathFinderTest {
     private Line 신분당선;
     private Line 삼호선;
 
+
     /**
      * 교대역    --- *2호선* (10) ---    강남역
      * |                                 |
@@ -44,7 +45,7 @@ class ShortestPathFinderTest {
 
     @DisplayName("최단 거리를 반환한다")
     @Test
-    void test() {
+    void whenShowShortestPath() {
         ShortestPathFinder<LineSectionEdge, Long> pathFinder = new ShortestPathFinder<>();
         var lines = List.of(이호선, 신분당선, 삼호선);
         //1. 엣지들만 가져와서 넣어야함.
@@ -53,14 +54,15 @@ class ShortestPathFinderTest {
                 .map(LineSectionEdge::from)
                 .collect(Collectors.toList());
 
-        GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역);
+        GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역)
+                .orElseThrow();
 
         assertThat(pathResponse.getWeight()).isEqualTo(5);
     }
 
     @DisplayName("최단거리를 정렬해 vertex만 반환한다")
     @Test
-    void test2() {
+    void whenShowShortestVertex() {
         ShortestPathFinder<LineSectionEdge, Long> pathFinder = new ShortestPathFinder<>();
         var lines = List.of(이호선, 신분당선, 삼호선);
 
@@ -69,8 +71,27 @@ class ShortestPathFinderTest {
                 .map(LineSectionEdge::from)
                 .collect(Collectors.toList());
 
-        GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역);
+        GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역)
+                .orElseThrow();
         assertThat(pathResponse.getVertexList()).containsExactly(교대역, 남부터미널역, 양재역);
+    }
+
+    @DisplayName("끊어진 역 조회시 빈값을 반환한다")
+    @Test
+    void whenNonConnectedLineThenReturnEmpty() {
+        ShortestPathFinder<LineSectionEdge, Long> pathFinder = new ShortestPathFinder<>();
+        Long 해운대역 = 5L;
+        Long 서면역 = 6L;
+        Line 부산1호선 = new Line("부산역", "orange", new Section(해운대역, 서면역, 5L));
+
+        var lines = List.of(이호선, 신분당선, 삼호선, 부산1호선);
+
+        List<LineSectionEdge> edges = lines.stream()
+                .flatMap(Line::sectionStream)
+                .map(LineSectionEdge::from)
+                .collect(Collectors.toList());
+        
+        assertThat(pathFinder.find(edges, 교대역, 서면역).isEmpty()).isTrue();
     }
 
 }

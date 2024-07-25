@@ -8,6 +8,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Component
@@ -18,11 +19,11 @@ public class ShortestPathFinder<EDGE extends WeightedEdge<VERTEX>, VERTEX> {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
-    public GraphPath<VERTEX, DefaultWeightedEdge> find(final List<EDGE> edges, VERTEX source, VERTEX target) {
+    public Optional<GraphPath<VERTEX, DefaultWeightedEdge>> find(final List<EDGE> edges, VERTEX source, VERTEX target) {
         addEdges(edges);
         setWeight(edges);
         DijkstraShortestPath<VERTEX, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
-        return shortestPath.getPath(source, target);
+        return Optional.ofNullable(shortestPath.getPath(source, target));
     }
 
     private void setWeight(final List<EDGE> edges) {

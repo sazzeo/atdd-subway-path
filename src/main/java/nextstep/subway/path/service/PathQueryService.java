@@ -4,6 +4,7 @@ import nextstep.subway.exceptions.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.repository.LineRepository;
 import nextstep.subway.path.domain.LineSectionEdge;
+import nextstep.subway.path.exceptions.PathNotFoundException;
 import nextstep.subway.path.payload.SearchPathRequest;
 import nextstep.subway.path.payload.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
@@ -35,17 +36,14 @@ public class PathQueryService {
     public ShortestPathResponse findShortestPath(final SearchPathRequest request) {
         Long source = request.getSource();
         Long target = request.getTarget();
-        List<Station> stations = stationRepository.findByIdIn(List.of(source, target));
-        if (stations.size() != 2) {
-            throw new NonExistentStationException(ErrorMessage.NON_EXISTENT_STATION);
-        }
-        List<Line> lines = lineRepository.findAll();
-        List<LineSectionEdge> edges = lines.stream()
+        assertStationExist(source, target);
+        List<LineSectionEdge> edges = lineRepository.findAll().stream()
                 .flatMap(Line::sectionStream)
                 .map(LineSectionEdge::from)
                 .collect(Collectors.toList());
 
-        var shortestPath = shortestPathFinder.find(edges, source, target);
+        var shortestPath = shortestPathFinder.find(edges, source, target)
+                .orElseThrow(() -> new PathNotFoundException(ErrorMessage.PATH_NOT_FOUND));
         List<Long> stationIds = shortestPath.getVertexList();
         Map<Long, Station> stationMap = getStationMap(stationIds);
         return new ShortestPathResponse(
@@ -55,6 +53,13 @@ public class PathQueryService {
                         .collect(Collectors.toList()),
                 (long) shortestPath.getWeight()
         );
+    }
+
+    private void assertStationExist(final Long source, final Long target) {
+        List<Station> stations = stationRepository.findByIdIn(List.of(source, target));
+        if (stations.size() != 2) {
+            throw new NonExistentStationException(ErrorMessage.NON_EXISTENT_STATION);
+        }
     }
 
     private Map<Long, Station> getStationMap(final Collection<Long> stationsIds) {
