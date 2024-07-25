@@ -42,15 +42,14 @@ public class PathQueryService {
         List<Line> lines = lineRepository.findAll();
         List<LineSectionEdge> edges = lines.stream()
                 .flatMap(Line::sectionStream)
-                .map(it -> new LineSectionEdge(it.getUpStationId(), it.getDownStationId(),
-                        it.getDistance().doubleValue()))
+                .map(LineSectionEdge::from)
                 .collect(Collectors.toList());
 
         var shortestPath = shortestPathFinder.find(edges, source, target);
         List<Long> stationIds = shortestPath.getVertexList();
         Map<Long, Station> stationMap = getStationMap(stationIds);
         return new ShortestPathResponse(
-                shortestPath.getVertexList().stream()
+                stationIds.stream()
                         .map(stationMap::get)
                         .map(StationResponse::from)
                         .collect(Collectors.toList()),

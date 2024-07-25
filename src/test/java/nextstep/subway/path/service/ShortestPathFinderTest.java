@@ -47,18 +47,15 @@ class ShortestPathFinderTest {
     void test() {
         ShortestPathFinder<LineSectionEdge, Long> pathFinder = new ShortestPathFinder<>();
         var lines = List.of(이호선, 신분당선, 삼호선);
-
         //1. 엣지들만 가져와서 넣어야함.
         List<LineSectionEdge> edges = lines.stream()
                 .flatMap(Line::sectionStream)
-                .map(it -> new LineSectionEdge(it.getUpStationId(), it.getDownStationId(),
-                        it.getDistance().doubleValue()))
+                .map(LineSectionEdge::from)
                 .collect(Collectors.toList());
 
         GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역);
 
         assertThat(pathResponse.getWeight()).isEqualTo(5);
-
     }
 
     @DisplayName("최단거리를 정렬해 vertex만 반환한다")
@@ -67,11 +64,9 @@ class ShortestPathFinderTest {
         ShortestPathFinder<LineSectionEdge, Long> pathFinder = new ShortestPathFinder<>();
         var lines = List.of(이호선, 신분당선, 삼호선);
 
-        //1. 엣지들만 가져와서 넣어야함.
         List<LineSectionEdge> edges = lines.stream()
                 .flatMap(Line::sectionStream)
-                .map(it -> new LineSectionEdge(it.getUpStationId(), it.getDownStationId(),
-                        it.getDistance().doubleValue()))
+                .map(LineSectionEdge::from)
                 .collect(Collectors.toList());
 
         GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역);
