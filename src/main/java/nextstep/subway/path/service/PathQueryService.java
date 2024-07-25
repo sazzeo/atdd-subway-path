@@ -3,7 +3,7 @@ package nextstep.subway.path.service;
 import nextstep.subway.exceptions.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.repository.LineRepository;
-import nextstep.subway.path.domain.PathResponse;
+import nextstep.subway.path.domain.LineSectionEdge;
 import nextstep.subway.path.payload.SearchPathRequest;
 import nextstep.subway.path.payload.ShortestPathResponse;
 import nextstep.subway.station.domain.Station;
@@ -24,12 +24,12 @@ public class PathQueryService {
 
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
-    private final ShortestLinePathFinder shortestLinePathFinder;
+    private final ShortestPathFinder<LineSectionEdge, Long> shortestPathFinder;
 
-    public PathQueryService(final StationRepository stationRepository, final LineRepository lineRepository, final ShortestLinePathFinder shortestLinePathFinder) {
+    public PathQueryService(final StationRepository stationRepository, final LineRepository lineRepository, final ShortestPathFinder shortestPathFinder) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
-        this.shortestLinePathFinder = shortestLinePathFinder;
+        this.shortestPathFinder = shortestPathFinder;
     }
 
     public ShortestPathResponse findShortestPath(final SearchPathRequest request) {
@@ -40,16 +40,21 @@ public class PathQueryService {
             throw new NonExistentStationException(ErrorMessage.NON_EXISTENT_STATION);
         }
         List<Line> lines = lineRepository.findAll();
-        PathResponse pathResponse = shortestLinePathFinder.getPathResponse(lines, source, target);
-        List<Long> stationIds = pathResponse.getPath();
-        Map<Long, Station> stationMap = getStationMap(stationIds);
+        List<LineSectionEdge> edges = lines.stream()
+                .flatMap(Line::sectionStream)
+                .map(it -> new LineSectionEdge(it.getUpStationId(), it.getDownStationId(),
+                        it.getDistance().doubleValue(), it.getId()))
+                .collect(Collectors.toList());
 
+        var shortestPath = shortestPathFinder.find(edges, source, target);
+        List<Long> stationIds = shortestPath.getVertexList();
+        Map<Long, Station> stationMap = getStationMap(stationIds);
         return new ShortestPathResponse(
-                stationIds.stream()
+                shortestPath.getVertexList().stream()
                         .map(stationMap::get)
                         .map(StationResponse::from)
                         .collect(Collectors.toList()),
-                pathResponse.getDistance()
+                (long) shortestPath.getWeight()
         );
     }
 

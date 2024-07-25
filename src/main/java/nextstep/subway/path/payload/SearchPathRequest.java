@@ -4,6 +4,11 @@ public class SearchPathRequest {
     private Long source;
     private Long target;
 
+    public SearchPathRequest(final Long source, final Long target) {
+        this.source = source;
+        this.target = target;
+    }
+
     public void setSource(final Long source) {
         this.source = source;
     }
@@ -18,5 +23,9 @@ public class SearchPathRequest {
 
     public Long getTarget() {
         return target;
+    }
+
+    public boolean isStationSame() {
+        return source.equals(target);
     }
 }
