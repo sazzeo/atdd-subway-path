@@ -52,7 +52,7 @@ class ShortestPathFinderTest {
         List<LineSectionEdge> edges = lines.stream()
                 .flatMap(Line::sectionStream)
                 .map(it -> new LineSectionEdge(it.getUpStationId(), it.getDownStationId(),
-                        it.getDistance().doubleValue(), it.getId()))
+                        it.getDistance().doubleValue()))
                 .collect(Collectors.toList());
 
         GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역);
@@ -71,7 +71,7 @@ class ShortestPathFinderTest {
         List<LineSectionEdge> edges = lines.stream()
                 .flatMap(Line::sectionStream)
                 .map(it -> new LineSectionEdge(it.getUpStationId(), it.getDownStationId(),
-                        it.getDistance().doubleValue(), it.getId()))
+                        it.getDistance().doubleValue()))
                 .collect(Collectors.toList());
 
         GraphPath<Long, DefaultWeightedEdge> pathResponse = pathFinder.find(edges, 교대역, 양재역);

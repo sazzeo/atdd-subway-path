@@ -26,7 +26,7 @@ public class PathQueryService {
     private final LineRepository lineRepository;
     private final ShortestPathFinder<LineSectionEdge, Long> shortestPathFinder;
 
-    public PathQueryService(final StationRepository stationRepository, final LineRepository lineRepository, final ShortestPathFinder shortestPathFinder) {
+    public PathQueryService(final StationRepository stationRepository, final LineRepository lineRepository, final ShortestPathFinder<LineSectionEdge, Long> shortestPathFinder) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.shortestPathFinder = shortestPathFinder;
@@ -43,7 +43,7 @@ public class PathQueryService {
         List<LineSectionEdge> edges = lines.stream()
                 .flatMap(Line::sectionStream)
                 .map(it -> new LineSectionEdge(it.getUpStationId(), it.getDownStationId(),
-                        it.getDistance().doubleValue(), it.getId()))
+                        it.getDistance().doubleValue()))
                 .collect(Collectors.toList());
 
         var shortestPath = shortestPathFinder.find(edges, source, target);
