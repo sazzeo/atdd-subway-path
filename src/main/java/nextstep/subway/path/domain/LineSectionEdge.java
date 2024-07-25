@@ -1,38 +1,30 @@
 package nextstep.subway.path.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
+public class LineSectionEdge implements WeightedEdge<Long> {
 
-public class LineSectionEdge extends DefaultWeightedEdge {
+    private final Long source;
 
-    private String name;
-    private Long id;
+    private final Long target;
+    private final double weight;
 
-    public LineSectionEdge() {
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Long getId() {
-        return id;
+    public LineSectionEdge(final Long source, final Long target, final double weight) {
+        this.source = source;
+        this.target = target;
+        this.weight = weight;
     }
 
     @Override
     public Long getSource() {
-        return (Long) super.getSource();
+        return source;
     }
 
     @Override
     public Long getTarget() {
-        return (Long) super.getTarget();
+        return target;
+    }
+
+    @Override
+    public double getWeight() {
+        return weight;
     }
 }
